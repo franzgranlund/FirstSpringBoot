@@ -1,10 +1,13 @@
 package fi.konstgjord.first.controller;
 
 import org.springframework.web.bind.annotation.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/home")
 public class HomeController {
+    private static final String template = "Hello, %s!";
+    private final AtomicLong counter = new AtomicLong();
 
     @GetMapping
     public String sayHello() {
@@ -16,9 +19,12 @@ public class HomeController {
         return "Hello, " + name + "!";
     }
 
-    @PostMapping("/greet")
-    public String greet(@RequestParam String greeting) {
-        return greeting;
+    public record Greeting(Long id, String name) {}
+
+    @GetMapping("/greet")
+    @ResponseBody
+    public Greeting greet(@RequestParam(name="name", required=false, defaultValue="Stranger") String name) {
+        return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
     @PutMapping("/goodbye")
