@@ -1,8 +1,6 @@
 package fi.konstgjord.first;
 
 import fi.konstgjord.first.dto.CatDTO;
-import fi.konstgjord.first.service.CatService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +15,15 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class SecondApplicationTests {
-	static final Logger logger = LoggerFactory.getLogger(SecondApplicationTests.class);
+class RestTemplateTest {
+	static final Logger logger = LoggerFactory.getLogger(RestTemplateTest.class);
 
 	@Container
 	@ServiceConnection
@@ -36,10 +34,6 @@ class SecondApplicationTests {
 
 	@Autowired
 	private TestRestTemplate restTemplate;
-
-	@Test
-	void contextLoads() {
-	}
 
 	@Test
 	void testCatService() {
@@ -53,8 +47,8 @@ class SecondApplicationTests {
 		assertEquals(HttpStatus.OK, getAllResponse.getStatusCode());
 		CatDTO[] catsFromGetAll = getAllResponse.getBody();
 
-		logger.info("XXX: {}", catsFromGetAll);
 		assertNotNull(catsFromGetAll);
+		logger.info("XXX: {}", Arrays.toString(catsFromGetAll));
 
 		logger.info("testCatService -- stop");
 	}
