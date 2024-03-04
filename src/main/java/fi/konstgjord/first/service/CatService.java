@@ -41,6 +41,17 @@ public class CatService {
         return catRepository.findById(id).map(catMapper::toDTO);
     }
 
+    public List<CatDTO> getCatsByColorName(String colorName) {
+        Color color = colorRepository.findByColorName(colorName);
+        if (color != null) {
+            // Assuming you have a method to convert Cat entities to CatDTOs
+            return catRepository.findAllByColor(color).stream()
+                    .map(catMapper::toDTO)
+                    .collect(Collectors.toList());
+        }
+        return List.of(); // Return an empty list if color is not found
+    }
+
     public CatDTO createCat(CatDTO catDTO) {
         logger.info("createCat()");
         Cat cat = new Cat();

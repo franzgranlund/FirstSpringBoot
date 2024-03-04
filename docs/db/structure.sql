@@ -17,3 +17,4 @@ create table cat
 
 INSERT INTO color (color_name) VALUES ('Black');
 INSERT INTO color (color_name) VALUES ('White');
+INSERT INTO color (color_name) VALUES ('Orange');

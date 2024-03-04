@@ -1,6 +1,8 @@
 package fi.konstgjord.first;
 
 import fi.konstgjord.first.dto.CatDTO;
+import fi.konstgjord.first.model.Color;
+import fi.konstgjord.first.repository.ColorRepository;
 import fi.konstgjord.first.service.CatService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,13 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -33,6 +31,9 @@ class FirstApplicationTests {
 	@Autowired
 	private CatService catService;
 
+	@Autowired
+	private ColorRepository colorRepository;
+
 	@Test
 	void contextLoads() {
 	}
@@ -40,20 +41,21 @@ class FirstApplicationTests {
 	@Test
 	void testCatService() {
 		logger.info("testCatService -- start");
-		Assertions.assertEquals(0L, catService.getAllCats().size(), "We should have no cats");
+		long nrOfCurrentCats = catService.getAllCats().size();
 		CatDTO catDTO = new CatDTO(null, "Lenni", 1L);
 		catService.createCat(catDTO);
-		Assertions.assertEquals(1L, catService.getAllCats().size(), "We should have one cat");
+		Assertions.assertEquals(nrOfCurrentCats + 1, catService.getAllCats().size(), "We should have one cat");
 		logger.info("testCatService -- stop");
 	}
 
-	//@Test
+	@Test
 	void testCatService2() {
 		logger.info("testCatService2 -- start");
-		Assertions.assertEquals(0L, catService.getAllCats().size(), "We should have no cats");
-		CatDTO catDTO = new CatDTO(null, "Lenni", 1L);
+		Assertions.assertEquals(0L, catService.getCatsByColorName("Orange").size(), "We should not have any orange cats");
+		Color orange = colorRepository.findByColorName("Orange");
+		CatDTO catDTO = new CatDTO(null, "Nugget", orange.getId());
 		catService.createCat(catDTO);
-		Assertions.assertEquals(1L, catService.getAllCats().size(), "We should have one cat");
+		Assertions.assertEquals(1L, catService.getCatsByColorName("Orange").size(), "We should have one cat");
 		logger.info("testCatService2 -- stop");
 	}
 }
